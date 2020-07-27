@@ -5,18 +5,23 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import dao.naverDAO;
+import dao.naverDAOimpl;
+import dto.naverDTO;
+
 
 public class ApiExamSearchBlog {
 
 	public static void main(String[] args) {
-		String clientId = ""; // 애플리케이션 클라이언트 아이디값"
-		String clientSecret = ""; // 애플리케이션 클라이언트 시크릿값"
+		String clientId = "N5MJcjZLiyCif_kr1yxI"; // 애플리케이션 클라이언트 아이디값"
+		String clientSecret = "tUxEs0bKcx"; // 애플리케이션 클라이언트 시크릿값"
 		
 		CusetumClass ct = new CusetumClass();
 
@@ -43,20 +48,31 @@ public class ApiExamSearchBlog {
 	    JSONObject jObject = new JSONObject(responseBody);
 	    // 배열을 가져옵니다.
 	    JSONArray jArray = jObject.getJSONArray("items");
-
+	    
+	    
+//	    System.out.println(responseBody); //검색 결과 출력
 	    // 배열의 모든 아이템을 출력합니다.
-	    for (int i = 0; i < jArray.length(); i++) {
+	    for (int i = 0; i < 5; i++) {
 	        JSONObject obj = jArray.getJSONObject(i);
+	        
 	        String title = obj.getString("title");
-//	        String url = obj.getString("url");
+	        String url = obj.getString("link");
 //	        boolean draft = obj.getBoolean("draft");
 	        System.out.println("title(" + i + "): " + title);
-//	        System.out.println("url(" + i + "): " + url);
+	        System.out.println("url(" + i + "): " + url);
 //	        System.out.println("draft(" + i + "): " + draft);
+	        
+	        naverDTO dto = new naverDTO();
+	        dto.setTitle(obj.getString("title"));
+	        dto.setUrl(obj.getString("link"));
+	        
+	        naverDAOimpl dao = new naverDAOimpl();
+	        dao.insert(dto);
+	        
 	        System.out.println();
 	    }
+	    
 		
-//		System.out.println(responseBody); //검색 결과 출력
 	}
 
 	private static String get(String apiUrl, Map<String, String> requestHeaders) {
